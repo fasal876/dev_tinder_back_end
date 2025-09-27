@@ -1,0 +1,4 @@
+{
+  "watch": ["src", "routes", "*.js"],
+  "ext": "js,json"
+}
