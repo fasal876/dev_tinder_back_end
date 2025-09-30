@@ -3,19 +3,30 @@ const app = express();
 const db = require("./config/db");
 const User = require("./models/user");
 
-app.post("/signup", (req, res) => {
-  const user = new User({
-    firstName: "fasal",
-    lastName: "kp",
-    password: "fasal@123",
-    gender: "male",
-  });
+app.use(express.json());
+
+app.post("/signup", async (req, res) => {
+  const userData = req.body;
+  const user = new User(req.body);
   try {
-    user.save();
-    res.send("user  created successfully");
+    await user.save();
+    res.send("user created successfully");
   } catch (err) {
-    res.status(400).send("Unable to process your request: " + err.message);
+    res.status(400).send("Something went wrong");
   }
+});
+app.get("/users", async (req, res) => {
+  try {
+    const result = await User.findOne();
+    res.send(result);
+  } catch (err) {
+    res.status(400).send("something went wrong");
+  }
+});
+app.get("/feed", async (req, res) => {
+  try {
+    const users = await User.find({});
+  } catch (err) {}
 });
 
 db()
