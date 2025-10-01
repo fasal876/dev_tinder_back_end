@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const { isEmail, isURL, isStrongPassword } = require("validator");
 const userSchema = new mongoose.Schema(
   {
     firstName: {
@@ -7,10 +7,12 @@ const userSchema = new mongoose.Schema(
       required: true,
       minLength: 4,
       maxLength: 30,
+      match: /^[a-zA-Z'-]+(?: [a-zA-Z]+)*$/,
     },
     lastName: {
       type: String,
       maxLength: 50,
+      match: /^[a-zA-Z'-]+$/,
     },
     emailId: {
       type: String,
@@ -18,10 +20,22 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      validate(value) {
+        if (!isEmail(value)) {
+          throw new Error("Invalid email id");
+        }
+      },
     },
     password: {
       type: String,
       required: true,
+      validate(value) {
+        {
+          if (!isStrongPassword(value)) {
+            throw new Error("Please enter a strong password");
+          }
+        }
+      },
     },
     gender: {
       type: String,
@@ -40,6 +54,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default:
         "https://premierleasing.com.bd/wp-content/uploads/2023/09/dummy-profile-pic.jpg",
+      validate(value) {
+        if (!isURL(value)) {
+          throw new Error("please enter valid url");
+        }
+      },
     },
     about: {
       type: String,
