@@ -12,21 +12,47 @@ app.post("/signup", async (req, res) => {
     await user.save();
     res.send("user created successfully");
   } catch (err) {
-    res.status(400).send("Something went wrong");
+    res.status(400).send("Something went wrong: " + err.message);
   }
 });
 app.get("/users", async (req, res) => {
+  const userId = req.body.userId;
   try {
-    const result = await User.findOne();
+    const result = await User.findById(userId);
     res.send(result);
   } catch (err) {
-    res.status(400).send("something went wrong");
+    res.status(401).send("Bad request");
+  }
+});
+app.delete("/users", async (req, res) => {
+  const userId = req.body.userId;
+  try {
+    await User.findByIdAndDelete(userId);
+    res.send("user has deleted");
+  } catch (err) {
+    res.status(401).send("Bad request");
+  }
+});
+app.patch("/users", async (req, res) => {
+  const userId = req.body.userId;
+  const data = req.body;
+  try {
+    const prev = await User.findByIdAndUpdate(userId, data, {
+      returnDocument: "after",
+      runValidators: true,
+    });
+    res.send(prev);
+  } catch (err) {
+    res.status(401).send("Bad request" + err.message);
   }
 });
 app.get("/feed", async (req, res) => {
   try {
     const users = await User.find({});
-  } catch (err) {}
+    res.send(users);
+  } catch (err) {
+    res.status(400).send("something went wrong");
+  }
 });
 
 db()
