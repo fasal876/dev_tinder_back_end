@@ -3,10 +3,10 @@ const User = require("../models/user");
 const checkUserAuth = async (req, res, next) => {
   try {
     const { token } = req.cookies;
-    const decoded = await jwt.verify(token, "Dev@Tinder*123");
-    if (!decoded) {
+    if (!token) {
       throw new Error("Invaid token");
     }
+    const decoded = await jwt.verify(token, "Dev@Tinder*123");
     const user = await User.findById(decoded._id);
     if (!user) {
       throw new Error("Invalid user");

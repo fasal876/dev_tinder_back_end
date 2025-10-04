@@ -16,7 +16,7 @@ profileRouter.get("/view", checkUserAuth, (req, res) => {
     res.status(400).send("Bad request : " + err.message);
   }
 });
-profileRouter.post("/edit", checkUserAuth, async (req, res) => {
+profileRouter.patch("/edit", checkUserAuth, async (req, res) => {
   try {
     const isValidFields = validateUpdateRequest(req);
     console.log(isValidFields);
@@ -34,9 +34,9 @@ profileRouter.post("/edit", checkUserAuth, async (req, res) => {
     res.status(400).send("Bad request " + err.message);
   }
 });
-profileRouter.post("/password", checkUserAuth, async (req, res) => {
+profileRouter.patch("/password", checkUserAuth, async (req, res) => {
   try {
-    const isValid = validateUpdatePassword(req);
+    validateUpdatePassword(req);
     const user = req.user;
     user.password = await bcrypt.hash(req.body.password, 10);
     await user.save();
