@@ -26,7 +26,6 @@ requestRouter.post("/send/:status/:userID", checkUserAuth, async (req, res) => {
         { fromUserId: toUserId, toUserId: fromUserId },
       ],
     });
-    console.log(connectionExist);
     if (connectionExist) {
       throw new Error(" cannot make the connection");
     }
@@ -42,4 +41,34 @@ requestRouter.post("/send/:status/:userID", checkUserAuth, async (req, res) => {
     res.status(400).send("Bad request " + err.message);
   }
 });
+requestRouter.post(
+  "/review/:status/:requestId",
+  checkUserAuth,
+  async (req, res) => {
+    try {
+      const loggedUserId = req.user._id;
+      const status = req.params.status;
+      const requestId = req.params.requestId;
+      //check if status accepted, reject
+      if (status !== "accepted" && status !== "rejected") {
+        throw new Error("Invalid status");
+      }
+      //only allow if request is id present,toUserId is loggeduser and status is pending
+      const connectionRequest = await ConnectionRequest.findOne({
+        _id: requestId,
+        toUserId: loggedUserId,
+        status: "interested",
+      });
+
+      if (!connectionRequest) {
+        throw new Error("Invalid request");
+      }
+      connectionRequest.status = status;
+      const data = await connectionRequest.save();
+      res.json({ message: status + " request succesfully updated", data });
+    } catch (err) {
+      res.status(400).send("Bad request : " + err.message);
+    }
+  }
+);
 module.exports = requestRouter;

@@ -17,4 +17,34 @@ const validateLogin = (req) => {
     throw new Error("Enter a valid email");
   }
 };
-module.exports = { signupValidation, validateLogin };
+
+const validateUpdateRequest = (req) => {
+  const allowedFields = new Set([
+    "firstName",
+    "lastName",
+    "age",
+    "photoURL",
+    "about",
+    "skills",
+  ]);
+  const isValid = Object.keys(req.body).every((field) =>
+    allowedFields.has(field)
+  );
+  return isValid;
+};
+const validateUpdatePassword = (req) => {
+  const keys = Object.keys(req.body);
+  const validFileds = keys.length == 1 && keys[0] === "password";
+  if (!validFileds) {
+    throw new Error("Invalid fields");
+  }
+  if (!isStrongPassword(req.body[keys[0]])) {
+    throw new Error("Please enter a strong password");
+  }
+};
+module.exports = {
+  signupValidation,
+  validateLogin,
+  validateUpdateRequest,
+  validateUpdatePassword,
+};
