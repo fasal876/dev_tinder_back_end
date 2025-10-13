@@ -11,7 +11,7 @@ const profileRouter = express.Router();
 profileRouter.get("/view", checkUserAuth, (req, res) => {
   try {
     const user = req.user;
-    res.send(req.user);
+    res.json({ data: user });
   } catch (err) {
     res.status(400).send("Bad request : " + err.message);
   }
@@ -19,12 +19,13 @@ profileRouter.get("/view", checkUserAuth, (req, res) => {
 profileRouter.patch("/edit", checkUserAuth, async (req, res) => {
   try {
     const isValidFields = validateUpdateRequest(req);
-    console.log(isValidFields);
+
     if (!isValidFields) {
       throw new Error("Invalid fields");
     }
     const user = req.user;
     const updatedUser = req.body;
+
     Object.keys(updatedUser).forEach((field) => {
       user[field] = updatedUser[field];
     });

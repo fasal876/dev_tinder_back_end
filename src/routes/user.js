@@ -3,7 +3,7 @@ const { checkUserAuth } = require("../middlewares/checkUserAuth");
 const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/user");
 const userRouter = express.Router();
-const USER_FILTER = "firstName lastName skills age about photoURL";
+const USER_FILTER = "firstName lastName skills age about photoURL genderj";
 userRouter.get("/request/pending", checkUserAuth, async (req, res) => {
   try {
     //check user authenticated
@@ -21,10 +21,7 @@ userRouter.get("/request/pending", checkUserAuth, async (req, res) => {
       "about",
       ,
     ]);
-    if (userPendingConnection.length === 0) {
-      res.status(404).send("you don't have connection request");
-      return;
-    }
+
     const data = userPendingConnection.map((document) => {
       return {
         _id: document._id,

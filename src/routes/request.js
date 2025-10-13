@@ -35,10 +35,11 @@ requestRouter.post("/send/:status/:userID", checkUserAuth, async (req, res) => {
       toUserId,
       status,
     });
-    await connectionRequest.save();
-    res.send("valid");
+    const data = await connectionRequest.save();
+
+    res.json({ message: "succes" });
   } catch (err) {
-    res.status(400).send("Bad request " + err.message);
+    res.status(400).json({ message: "success" });
   }
 });
 requestRouter.post(
@@ -65,6 +66,7 @@ requestRouter.post(
       }
       connectionRequest.status = status;
       const data = await connectionRequest.save();
+
       res.json({ message: status + " request succesfully updated", data });
     } catch (err) {
       res.status(400).send("Bad request : " + err.message);

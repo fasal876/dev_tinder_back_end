@@ -26,6 +26,7 @@ const validateUpdateRequest = (req) => {
     "photoURL",
     "about",
     "skills",
+    "gender",
   ]);
   const isValid = Object.keys(req.body).every((field) =>
     allowedFields.has(field)
