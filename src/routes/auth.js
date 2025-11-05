@@ -1,5 +1,5 @@
 const express = require("express");
-const { signupValidation, validateLogin } = require("../../utility/validation");
+const { signupValidation, validateLogin } = require("../utility/validation");
 const authRouter = express.Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
@@ -20,6 +20,7 @@ authRouter.post("/signup", async (req, res) => {
     res.cookie("token", token, { maxAge: 24 * 60 * 60 * 1000 });
     res.send({ message: "user created successfully", user: signupUser });
   } catch (err) {
+    console.log(err);
     res.status(400).send("Something went wrong: " + err.message);
   }
 });
@@ -41,6 +42,7 @@ authRouter.post("/login", async (req, res) => {
 
     res.send({ user: user });
   } catch (err) {
+    console.log(err);
     res.status(400).send("Bad request " + err.message);
   }
 });
