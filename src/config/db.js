@@ -1,7 +1,9 @@
 const mongoos = require("mongoose");
 
 const connectDB = async () => {
-  await mongoos.connect(process.env.DATA_BASE_SECRET);
+  const db = await mongoos.connect(process.env.DATA_BASE_SECRET);
+
+  return db;
 };
 
 module.exports = connectDB;

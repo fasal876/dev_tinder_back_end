@@ -1,12 +1,13 @@
 const express = require("express");
 const { checkUserAuth } = require("../middlewares/checkUserAuth");
 const { Chat } = require("../models/chat");
-const { Connection } = require("mongoose");
+const ConnectionRequest = require("../models/connectionRequest");
+
 const chatRoute = express.Router();
 chatRoute.get("/:toUserId", checkUserAuth, async (req, res) => {
   try {
     const toUserId = req.params.toUserId;
-    const connectionExist = Connection.findOne({
+    const connectionExist = await ConnectionRequest.findOne({
       $or: [
         { fromUserId: req.user._id, toUserId, status: "accepted" },
         { fromUserId: toUserId, toUserId: req.user._id, status: "accepted" },
@@ -28,7 +29,9 @@ chatRoute.get("/:toUserId", checkUserAuth, async (req, res) => {
       await chat.save();
     }
     res.json(chat);
-  } catch (err) {}
+  } catch (err) {
+    res.send(err);
+  }
 });
 
 module.exports = chatRoute;
